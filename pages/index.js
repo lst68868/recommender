@@ -7,6 +7,7 @@ export default function Home() {
   const [senderName, setSenderName] = useState("");
   const [recipientName, setRecipientName] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
   const [subjectLine, setSubjectLine] = useState("Hello From ZooTools");
   const [result, setResult] = useState("");
 
@@ -18,23 +19,27 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ emailGoal, senderName, recipientName }),
+        body: JSON.stringify({
+          emailGoal,
+          senderName,
+          recipientName,
+          recipientEmail,
+          websiteUrl,
+        }),
       });
 
       const data = await response.json();
-      if (response.status !== 200) {
-        throw (
-          data.error ||
-          new Error(`Request failed with status ${response.status}`)
-        );
+
+      if (data.error) {
+        alert(data.error.message);
+        return;
       }
 
-      const extractedSubjectLine = data.subjectLine || "Hello from ZooTools :)";
-      setSubjectLine(extractedSubjectLine);
-      setResult(data.result.trim());
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
+      setSubjectLine(data.subjectLine);
+      setResult(data.result);
+    } catch (err) {
+      console.error(err);
+      alert("An unexpected error occurred.");
     }
   }
 
@@ -46,15 +51,17 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <img src="/zootools.png" className={styles.icon} />
-        <h3>Generate your Email</h3>
+        <h1 className={styles.title}>
+          Welcome to the ZooTools Email Generator
+        </h1>
         <form onSubmit={onSubmit}>
           <input
             type="text"
             name="emailGoal"
-            placeholder="What is the goal of this email?"
+            placeholder="Enter your email goal"
             value={emailGoal}
             onChange={(e) => setEmailGoal(e.target.value)}
+            required
           />
           <input
             type="text"
@@ -62,6 +69,7 @@ export default function Home() {
             placeholder="Enter your name"
             value={senderName}
             onChange={(e) => setSenderName(e.target.value)}
+            required
           />
           <input
             type="text"
@@ -69,51 +77,36 @@ export default function Home() {
             placeholder="Enter the recipient's name"
             value={recipientName}
             onChange={(e) => setRecipientName(e.target.value)}
+            required
           />
           <input
-            type="text"
+            type="email"
             name="recipientEmail"
             placeholder="Enter the recipient's email"
             value={recipientEmail}
             onChange={(e) => setRecipientEmail(e.target.value)}
+            required
           />
-          <input type="submit" value="Generate email" />
+          <input
+            type="text"
+            name="websiteUrl"
+            placeholder="Enter your website URL"
+            value={websiteUrl}
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+          />
+          <button type="submit">Generate Email</button>
         </form>
-        <textarea
-          className={styles.result}
-          placeholder='Your email will appear here. You can edit the text directly or click "send email" to edit and send from your default email provider.'
-          value={result}
-          onChange={(e) => setResult(e.target.value)}
-        />
-        <div className={styles.buttonContainer}>
-          <button
-            className={styles.mailButton}
-            onClick={() =>
-              window.open(
-                `mailto:${recipientEmail}?subject=${encodeURIComponent(
-                  subjectLine
-                )}&body=${encodeURIComponent(result)}`,
-                "_blank"
-              )
-            }
-          >
-            Send Email
-          </button>
-          <button
-            className={styles.clearButton} // Updated class name
-            onClick={() => {
-              setEmailGoal("");
-              setSenderName("");
-              setRecipientName("");
-              setRecipientEmail("");
-              setSubjectLine("Hello From ZooTools");
-              setResult("");
-            }}
-          >
-            Clear Form
-          </button>
-        </div>
+        {result && (
+          <div className={styles.result}>
+            <h2>{subjectLine}</h2>
+            <pre>{result}</pre>
+          </div>
+        )}
       </main>
+
+      <footer className={styles.footer}>
+        <p>ZooTools - Helping businesses grow</p>
+      </footer>
     </div>
   );
 }
