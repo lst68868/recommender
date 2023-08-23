@@ -28,14 +28,11 @@ export default function Home() {
           new Error(`Request failed with status ${response.status}`)
         );
       }
-      setResult(
-        data.result
-          .replace(/\[Name\]/g, recipientName)
-          .replace(/\[Your Name\]/g, senderName)
-          .trim()
-      );
+
+      const extractedSubjectLine = data.subjectLine || "Hello from ZooTools :)";
+      setSubjectLine(extractedSubjectLine);
+      setResult(data.result.trim());
     } catch (error) {
-      // Consider implementing your own error handling logic here
       console.error(error);
       alert(error.message);
     }
@@ -55,7 +52,7 @@ export default function Home() {
           <input
             type="text"
             name="emailGoal"
-            placeholder="Enter an email goal"
+            placeholder="What is the goal of this email?"
             value={emailGoal}
             onChange={(e) => setEmailGoal(e.target.value)}
           />
@@ -84,6 +81,7 @@ export default function Home() {
         </form>
         <textarea
           className={styles.result}
+          placeholder='Your email will appear here. You can edit the text directly or click "send email" to edit and send from your default email provider.'
           value={result}
           onChange={(e) => setResult(e.target.value)}
         />
@@ -103,7 +101,6 @@ export default function Home() {
         <button
           className={styles.mailButton}
           onClick={() => {
-            // Clear all form data
             setEmailGoal("");
             setSenderName("");
             setRecipientName("");
