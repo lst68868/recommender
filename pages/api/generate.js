@@ -1,6 +1,5 @@
 import { Configuration, OpenAIApi } from "openai";
-import axios from "axios";
-import cheerio from "cheerio";
+import puppeteer from "puppeteer";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -18,21 +17,28 @@ export default async function (req, res) {
   const emailGoal = req.body.emailGoal || "";
   const senderName = req.body.senderName || "";
   const recipientName = req.body.recipientName || "";
+  const recipientEmail = req.body.recipientEmail || "";
   const websiteUrl = req.body.websiteUrl || "";
 
   if (
     emailGoal.trim().length === 0 ||
     senderName.trim().length === 0 ||
-    recipientName.trim().length === 0
+    recipientName.trim().length === 0 ||
+    recipientEmail.trim().length === 0
   ) {
     res.status(400).json({ error: { message: "Please fill in all fields" } });
     return;
   }
 
+  let websiteContent = "";
+  if (websiteUrl.trim().length > 0) {
+    websiteContent = await scrapeWebsite(websiteUrl);
+  }
+
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: await generatePrompt(emailGoal, websiteUrl),
+      prompt: generatePrompt(emailGoal, websiteContent),
       temperature: 0.6,
       max_tokens: 500,
     });
@@ -56,43 +62,29 @@ export default async function (req, res) {
   }
 }
 
-async function scrapeWebsiteContent(url) {
-  const { data } = await axios.get(url);
-  const $ = cheerio.load(data);
-  const content = $("body").text(); // Adjust based on what you want to scrape
-  return content;
+async function scrapeWebsite(url) {
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url);
+
+    // Adjust this selector to target the specific content you want to scrape
+    const content = await page.$eval("body", (el) => el.textContent);
+
+    await browser.close();
+    return content;
+  } catch (error) {
+    console.error("Failed to scrape the website", error);
+    return "";
+  }
 }
 
-async function generatePrompt(emailGoal, websiteUrl) {
-  let promptDetails = "";
-
-  if (
-    emailGoal.includes("waitlist") ||
-    emailGoal.includes("referral") ||
-    emailGoal.toLowerCase().includes("Zootools Acquire")
-  ) {
-    promptDetails +=
-      " Include details about ZooTools Acquire, the #1 tool for creating waitlists and referral programs.";
-  }
-  if (
-    emailGoal.includes("email marketing") ||
-    emailGoal.includes("engagement") ||
-    emailGoal.toLowerCase().includes("Zootools Engage")
-  ) {
-    promptDetails +=
-      " Highlight ZooTools Engage for modern email marketing with built-in virality.";
-  }
-  if (
-    emailGoal.includes("forms") ||
-    emailGoal.includes("user segmentations") ||
-    emailGoal.toLowerCase().includes("Zootools Pandas")
-  ) {
-    promptDetails +=
-      " Mention Zootools Pandas for an alternative to old-fashioned forms and powerful user segmentations.";
-  }
-
-  const websiteContent = await scrapeWebsiteContent(websiteUrl);
-  promptDetails += ` Based on this website, you understand: ${websiteContent}.`;
-
-  return `You are a marketing assistant at ZooTools, a company that helps businesses grow their users with referral marketing, waitlists, referral programs, and gamified competitions. The user has provided the following goal for an email campaign: "${emailGoal}".${promptDetails} Please craft an engaging email that aligns with this goal and highlights the benefits of ZooTools. Provide a subject for the email with the format "Subject:"`;
+function generatePrompt(emailGoal, websiteContent) {
+  return `Goal: ${emailGoal}
+Website Content: ${websiteContent}
+Subject: [Please insert a subject here]
+Dear [Name],
+[Please write an email that accomplishes the goal stated above.]
+Sincerely,
+[Your Name]`;
 }

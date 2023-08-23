@@ -87,7 +87,7 @@ export default function Home() {
           <input
             type="text"
             name="websiteUrl"
-            placeholder="Enter your website URL"
+            placeholder="Enter the website URL (optional)"
             value={websiteUrl}
             onChange={(e) => setWebsiteUrl(e.target.value)}
           />
@@ -120,7 +120,7 @@ export default function Home() {
               setSenderName("");
               setRecipientName("");
               setRecipientEmail("");
-              setWebsiteUrl(""); // Clearing the website URL field
+              setWebsiteUrl("");
               setSubjectLine("Hello From ZooTools");
               setResult("");
             }}
