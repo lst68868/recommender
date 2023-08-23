@@ -100,6 +100,20 @@ export default function Home() {
         >
           Send Email
         </button>
+        <button
+          className={styles.mailButton}
+          onClick={() => {
+            // Clear all form data
+            setEmailGoal("");
+            setSenderName("");
+            setRecipientName("");
+            setRecipientEmail("");
+            setSubjectLine("Hello From ZooTools");
+            setResult("");
+          }}
+        >
+          Clear Form
+        </button>
       </main>
     </div>
   );
