@@ -105,20 +105,18 @@
   justify-content: space-between; /* To spread buttons apart */
 }
 
-/* Hover effect for the generate email input handler (assuming it's a submit button) */
 .main input[type="submit"]:hover {
   background-color: #08875a; /* Even darker shade of green */
   border-color: #08875a; /* Same as background color */
   transition: all 0.3s ease; /* Smooth transition effect */
 }
 
-/* Hover effect for the two other buttons (assuming they share the class .mailButton) */
 .main .mailButton:hover {
-  background-color: #08875a; /* Even darker shade of green */
+  background-color: #3f9db0;
   transition: all 0.3s ease; /* Smooth transition effect */
 }
 
 .main .clearButton:hover {
-  background-color: #08875a; /* Even darker shade of green */
+  background-color: #e54b4b; /* Even darker shade of green */
   transition: all 0.3s ease; /* Smooth transition effect */
 }
