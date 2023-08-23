@@ -62,11 +62,11 @@
   cursor: pointer;
 }
 .main .result {
-  font-weight: bold;
+  font-family: "ColfaxAI", Helvetica, sans-serif;
   margin-top: 40px;
   margin-left: 20px; /* Left margin */
   margin-right: 20px; /* Right margin */
-  width: calc(100% - 40px); /* Adjust the width */
+  width: calc(100% - 200px); /* Adjust the width */
   height: 200px;
   border: 1px solid #10a37f;
   border-radius: 4px;
