@@ -85,32 +85,34 @@ export default function Home() {
           value={result}
           onChange={(e) => setResult(e.target.value)}
         />
-        <button
-          className={styles.mailButton}
-          onClick={() =>
-            window.open(
-              `mailto:${recipientEmail}?subject=${encodeURIComponent(
-                subjectLine
-              )}&body=${encodeURIComponent(result)}`,
-              "_blank"
-            )
-          }
-        >
-          Send Email
-        </button>
-        <button
-          className={styles.mailButton}
-          onClick={() => {
-            setEmailGoal("");
-            setSenderName("");
-            setRecipientName("");
-            setRecipientEmail("");
-            setSubjectLine("Hello From ZooTools");
-            setResult("");
-          }}
-        >
-          Clear Form
-        </button>
+        <div className={styles.buttonContainer}>
+          <button
+            className={styles.mailButton}
+            onClick={() =>
+              window.open(
+                `mailto:${recipientEmail}?subject=${encodeURIComponent(
+                  subjectLine
+                )}&body=${encodeURIComponent(result)}`,
+                "_blank"
+              )
+            }
+          >
+            Send Email
+          </button>
+          <button
+            className={styles.clearButton} // Updated class name
+            onClick={() => {
+              setEmailGoal("");
+              setSenderName("");
+              setRecipientName("");
+              setRecipientEmail("");
+              setSubjectLine("Hello From ZooTools");
+              setResult("");
+            }}
+          >
+            Clear Form
+          </button>
+        </div>
       </main>
     </div>
   );

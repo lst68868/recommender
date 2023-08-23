@@ -78,13 +78,31 @@
 .main .mailButton {
   padding: 12px 0;
   color: #fff;
-  background-color: #10a37f;
+  background-color: #4fb6cf; /* Updated color */
   border: none;
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
   padding: 12px 16px;
   margin-top: 10px;
+  margin-right: 10px; /* Added margin */
+}
+
+.main .clearButton {
+  padding: 12px 0;
+  color: #fff;
+  background-color: #ff5f5f; /* Specific color */
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  padding: 12px 16px;
+  margin-top: 10px;
+}
+
+.main .buttonContainer {
+  display: flex;
+  justify-content: space-between; /* To spread buttons apart */
 }
 
 /* Hover effect for the generate email input handler (assuming it's a submit button) */
@@ -96,6 +114,11 @@
 
 /* Hover effect for the two other buttons (assuming they share the class .mailButton) */
 .main .mailButton:hover {
+  background-color: #08875a; /* Even darker shade of green */
+  transition: all 0.3s ease; /* Smooth transition effect */
+}
+
+.main .clearButton:hover {
   background-color: #08875a; /* Even darker shade of green */
   transition: all 0.3s ease; /* Smooth transition effect */
 }
