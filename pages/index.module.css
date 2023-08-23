@@ -120,3 +120,8 @@
   background-color: #e54b4b; /* Even darker shade of green */
   transition: all 0.3s ease; /* Smooth transition effect */
 }
+
+.loadingMessage {
+  font-weight: bold;
+  font-size: 20px;
+}

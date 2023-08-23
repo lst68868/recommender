@@ -9,9 +9,11 @@ export default function Home() {
   const [recipientEmail, setRecipientEmail] = useState("");
   const [subjectLine, setSubjectLine] = useState("Hello From ZooTools");
   const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(event) {
     event.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
@@ -35,6 +37,8 @@ export default function Home() {
     } catch (error) {
       console.error(error);
       alert(error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -80,10 +84,15 @@ export default function Home() {
           <input type="submit" value="Generate email" />
         </form>
         <textarea
-          className={styles.result}
-          placeholder='Your email will appear here. You can edit the text directly or click "send email" to edit and send from your default email provider.'
+          className={`${styles.result} ${loading ? styles.loadingMessage : ""}`}
+          placeholder={
+            loading
+              ? "Loading..."
+              : 'Your email will appear here. You can edit the text directly or click "send email" to edit and send from your default email provider.'
+          }
           value={result}
           onChange={(e) => setResult(e.target.value)}
+          readOnly={loading}
         />
         <div className={styles.buttonContainer}>
           <button
@@ -100,7 +109,7 @@ export default function Home() {
             Send Email
           </button>
           <button
-            className={styles.clearButton} // Updated class name
+            className={styles.clearButton}
             onClick={() => {
               setEmailGoal("");
               setSenderName("");
