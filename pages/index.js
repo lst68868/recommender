@@ -3,12 +3,6 @@ import { useState } from "react";
 import PacmanLoader from "react-spinners/PacmanLoader";
 import styles from "./index.module.css";
 
-const override = {
-  display: "block",
-  margin: "89px auto",
-  borderColor: "red",
-};
-
 export default function Home() {
   let [color, setColor] = useState("#10a37f");
   const [emailGoal, setEmailGoal] = useState("");
@@ -18,6 +12,19 @@ export default function Home() {
   const [subjectLine, setSubjectLine] = useState("Hello From ZooTools");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
+
+  function addToEmailGoal(textToAdd) {
+    setEmailGoal(emailGoal + " " + textToAdd);
+  }
+
+  function clearForm() {
+    setEmailGoal("");
+    setSenderName("");
+    setRecipientName("");
+    setRecipientEmail("");
+    setSubjectLine("Hello From ZooTools");
+    setResult("");
+  }
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -68,6 +75,66 @@ export default function Home() {
             value={emailGoal}
             onChange={(e) => setEmailGoal(e.target.value)}
           />
+          <button
+            type="button"
+            onClick={() =>
+              addToEmailGoal("Convince the recipient to sign up for Zootools.")
+            }
+          >
+            Convince to sign up
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              addToEmailGoal("I'm trying to upsell an existing ZooTools user.")
+            }
+          >
+            Upsell existing user
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              addToEmailGoal(
+                "Convince the recipient to buy a ZooTools product."
+              )
+            }
+          >
+            Convince to buy product
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              addToEmailGoal("I want to get a former ZooTools customer back")
+            }
+          >
+            Regain former customer
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              addToEmailGoal(
+                "I want to teach a new concept related to Zootools."
+              )
+            }
+          >
+            Teach new concept
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              addToEmailGoal("I want to help onboard a new Zootools user.")
+            }
+          >
+            Onboard new user
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              addToEmailGoal("I want to share a Zootools product update.")
+            }
+          >
+            Share product update
+          </button>
           <input
             type="text"
             name="senderName"
@@ -96,7 +163,6 @@ export default function Home() {
           <PacmanLoader
             color={color}
             loading={loading}
-            cssOverride={override}
             size={30}
             aria-label="Loading Spinner"
             data-testid="loader"
@@ -115,34 +181,18 @@ export default function Home() {
           />
         )}
 
-        <div className={styles.buttonContainer}>
-          <button
-            className={styles.mailButton}
-            onClick={() =>
-              window.open(
-                `mailto:${recipientEmail}?subject=${encodeURIComponent(
-                  subjectLine
-                )}&body=${encodeURIComponent(result)}`,
-                "_blank"
-              )
-            }
-          >
-            Send Email
-          </button>
-          <button
-            className={styles.clearButton}
-            onClick={() => {
-              setEmailGoal("");
-              setSenderName("");
-              setRecipientName("");
-              setRecipientEmail("");
-              setSubjectLine("Hello From ZooTools");
-              setResult("");
-            }}
-          >
-            Clear Form
-          </button>
-        </div>
+        <button
+          onClick={() =>
+            window.open(
+              `mailto:${recipientEmail}?subject=${encodeURIComponent(
+                subjectLine
+              )}&body=${encodeURIComponent(result)}`
+            )
+          }
+        >
+          Open email in my email app
+        </button>
+        <button onClick={clearForm}>Clear form</button>
       </main>
     </div>
   );
