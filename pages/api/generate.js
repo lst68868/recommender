@@ -37,6 +37,7 @@ export async function scrapeContent(url) {
       error
     );
   }
+  console.log(content);
   return content;
 }
 
