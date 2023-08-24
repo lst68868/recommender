@@ -42,7 +42,7 @@
   font-weight: bold;
   color: #202123;
   margin: 5px 0 40px;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
 }
 
 .main form {
@@ -162,8 +162,4 @@
   padding: 0;
   /* or whatever height you want */
   /* other styles as needed */
-}
-
-.pacmanloader {
-  margin-bottom: 10px;
 }

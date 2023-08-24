@@ -21,8 +21,8 @@ export default function Home() {
   const [scrapeUrl, setScrapeUrl] = useState("");
   const [emailTone, setEmailTone] = useState("");
 
-  function addToEmailGoal(textToAdd) {
-    setEmailGoal(emailGoal + " " + textToAdd);
+  function addToEmailGoal(emailGoal) {
+    setEmailGoal(emailGoal);
   }
 
   function addToRecipientEmail(emailDomain) {
