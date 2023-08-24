@@ -1,9 +1,44 @@
 import { Configuration, OpenAIApi } from "openai";
+import puppeteer from "puppeteer";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
+
+async function scrapeContent(url) {
+  let content = "";
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.setRequestInterception(true);
+    page.on("request", (req) => {
+      if (
+        ["image", "stylesheet", "font", "media"].includes(req.resourceType())
+      ) {
+        req.abort();
+      } else {
+        req.continue();
+      }
+    });
+
+    await page.goto("https://" + url, {
+      waitUntil: "domcontentloaded",
+      timeout: 10000,
+    });
+
+    content += await page.evaluate(() => document.body.innerText);
+    console.log(content);
+    await browser.close();
+  } catch (error) {
+    console.warn(
+      "An error occurred while scraping the URL. Skipping scraping.",
+      error
+    );
+  }
+  return content;
+}
 
 export default async function (req, res) {
   if (!configuration.apiKey) {
@@ -16,6 +51,8 @@ export default async function (req, res) {
   const emailGoal = req.body.emailGoal || "";
   const senderName = req.body.senderName || "";
   const recipientName = req.body.recipientName || "";
+  const scrapeUrl = req.body.scrapeUrl || "";
+  const emailTone = req.body.emailTone || "";
 
   if (
     emailGoal.trim().length === 0 ||
@@ -27,16 +64,18 @@ export default async function (req, res) {
   }
 
   try {
+    const content = await scrapeContent(scrapeUrl);
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generatePrompt(emailGoal),
-      temperature: 0.6,
+      prompt: generatePrompt(emailGoal, content), // Note that content might be empty if scraping failed
+      temperature: 0.7,
       max_tokens: 500,
     });
+
     let text = completion.data.choices[0].text
       .replace(/\[Name\]/g, recipientName)
-      .replace(/\[Your Name\]/g, senderName);
-
+      .replace(/\[Your Name\]/g, senderName)
+      .replace(/\[Recipient\]/g, recipientName);
     const subjectLineMatch = text.match(/^Subject: (.+)$/m);
     const subjectLine = subjectLineMatch
       ? subjectLineMatch[1]
@@ -53,7 +92,13 @@ export default async function (req, res) {
   }
 }
 
-export function generatePrompt(emailGoal) {
+export function generatePrompt(
+  emailGoal,
+  urlContent,
+  recipientName,
+  senderName,
+  emailTone
+) {
   let promptDetails = "";
 
   if (
@@ -81,5 +126,5 @@ export function generatePrompt(emailGoal) {
       " Mention Zootools Pandas for an alternative to old-fashioned forms and powerful user segmentations.";
   }
 
-  return `You are a marketing assistant at ZooTools, a company that helps businesses grow their users with referral marketing, waitlists, referral programs, and gamified competitions. The user has provided the following goal for an email campaign: "${emailGoal}".${promptDetails} Please craft an engaging email that aligns with this goal and highlights the benefits of ZooTools. Provide a subject for the email with the format "Subject:"`;
+  return `You are marketing for ZooTools, a company that helps businesses grow their users with referral marketing, waitlists, referral programs, and gamified competitions. This is your goal for an email you are writing: "${emailGoal}".${promptDetails}. The tone of the email should be ${emailTone}. You can find keywords about your email recipient here: ${urlContent}. You can use it to address the recipient's specific needs. You can use this information to learn more about the recipient of your email. Please craft an engaging email that aligns with this goal, highlights the benefits of ZooTools, and makes use of the information provided about the recipient. Provide a subject for the email with the format "Subject:". The email should be from ${recipientName} and to ${senderName}.`;
 }

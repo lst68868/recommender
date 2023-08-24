@@ -18,13 +18,19 @@ export default function Home() {
   const [subjectLine, setSubjectLine] = useState("Hello From ZooTools");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
+  const [scrapeUrl, setScrapeUrl] = useState("");
+  const [emailTone, setEmailTone] = useState("");
 
   function addToEmailGoal(textToAdd) {
     setEmailGoal(emailGoal + " " + textToAdd);
   }
 
-  function addToRecipientEmail(textToAdd) {
-    setRecipientEmail(recipientEmail + textToAdd);
+  function addToRecipientEmail(emailDomain) {
+    setRecipientEmail(recipientEmail + emailDomain);
+  }
+
+  function addToEmailTone(emailTone) {
+    setEmailTone(emailTone);
   }
 
   async function onSubmit(event) {
@@ -36,7 +42,12 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ emailGoal, senderName, recipientName }),
+        body: JSON.stringify({
+          emailGoal,
+          senderName,
+          recipientName,
+          scrapeUrl,
+        }),
       });
 
       const data = await response.json();
@@ -148,6 +159,36 @@ export default function Home() {
           </div>
           <input
             type="text"
+            name="emailTone"
+            placeholder="What is the tone of this email?"
+            value={emailTone}
+            onChange={(e) => addToEmailTone(e.target.value)}
+          />
+          <div className={styles.buttonRow}>
+            <button
+              type="button"
+              className={styles.mailButton}
+              onClick={() => addToEmailTone("Formal")}
+            >
+              Formal
+            </button>
+            <button
+              type="button"
+              className={styles.mailButton}
+              onClick={() => addToEmailTone("Casual")}
+            >
+              Casual
+            </button>
+          </div>
+          <input
+            type="text"
+            name="scrapeUrl"
+            placeholder="Recipient's website, e.g. zootools.com"
+            value={scrapeUrl}
+            onChange={(e) => setScrapeUrl(e.target.value)}
+          />
+          <input
+            type="text"
             name="senderName"
             placeholder="Enter your name"
             value={senderName}
@@ -187,14 +228,23 @@ export default function Home() {
         </form>
 
         {loading ? (
-          <PacmanLoader
-            color={color}
-            loading={loading}
-            cssOverride={override}
-            size={30}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+          <>
+            <PacmanLoader
+              color={color}
+              classname={styles.pacmanloader}
+              loading={loading}
+              cssOverride={override}
+              size={30}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+            <h4>Scraping for relevant data from your target company... </h4>
+            <h4>If the target site doesn't allow scraping, don't worry!</h4>
+            <h4>
+              We'll still return a custom AI-generated email, just without that
+              added content.
+            </h4>
+          </>
         ) : (
           <textarea
             className={`${styles.result} ${
