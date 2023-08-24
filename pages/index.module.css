@@ -78,7 +78,7 @@
 
 .main .mailButton {
   padding: 12px 0;
-  color: #ffffff;
+  color: #0b0303;
   background-color: #fcd638;
   border: none;
   border-radius: 4px;
@@ -140,6 +140,7 @@
 
 .buttonRow .mailButton {
   background-color: #3f9db0;
+  color: white;
 }
 
 .buttonRow .mailButton:hover {
