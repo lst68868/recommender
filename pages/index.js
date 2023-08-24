@@ -89,7 +89,7 @@ export default function Home() {
             value={recipientEmail}
             onChange={(e) => setRecipientEmail(e.target.value)}
           />
-          <input type="submit" value="Generate email" />
+          {!loading && <input type="submit" value="Generate email" />}
         </form>
 
         {loading ? (
