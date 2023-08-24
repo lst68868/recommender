@@ -19,6 +19,14 @@ export default function Home() {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
 
+  function addToEmailGoal(textToAdd) {
+    setEmailGoal(emailGoal + " " + textToAdd);
+  }
+
+  function addToRecipientEmail(textToAdd) {
+    setRecipientEmail(recipientEmail + textToAdd);
+  }
+
   async function onSubmit(event) {
     event.preventDefault();
     setLoading(true);
@@ -68,6 +76,76 @@ export default function Home() {
             value={emailGoal}
             onChange={(e) => setEmailGoal(e.target.value)}
           />
+          <div className={styles.buttonRowContainer}>
+            <div className={styles.buttonRow}>
+              <button
+                type="button"
+                className={styles.mailButton}
+                onClick={() =>
+                  addToEmailGoal(
+                    "Convince the recipient to sign up for Zootools."
+                  )
+                }
+              >
+                Convince to sign up
+              </button>
+              <button
+                type="button"
+                className={styles.mailButton}
+                onClick={() =>
+                  addToEmailGoal(
+                    "I'm trying to upsell an existing ZooTools user."
+                  )
+                }
+              >
+                Upsell existing user
+              </button>
+            </div>
+            <div className={styles.buttonRow}>
+              <button
+                type="button"
+                className={styles.mailButton}
+                onClick={() =>
+                  addToEmailGoal(
+                    "Convince the recipient to buy a ZooTools product."
+                  )
+                }
+              >
+                Convince to buy
+              </button>
+              <button
+                type="button"
+                className={styles.mailButton}
+                onClick={() =>
+                  addToEmailGoal(
+                    "I want to get a former ZooTools customer back"
+                  )
+                }
+              >
+                Regain customer
+              </button>
+            </div>
+            <div className={styles.buttonRow}>
+              <button
+                type="button"
+                className={styles.mailButton}
+                onClick={() =>
+                  addToEmailGoal("I want to help onboard a new Zootools user.")
+                }
+              >
+                Onboard new user
+              </button>
+              <button
+                type="button"
+                className={styles.mailButton}
+                onClick={() =>
+                  addToEmailGoal("I want to share a Zootools product update.")
+                }
+              >
+                Share product update
+              </button>
+            </div>
+          </div>
           <input
             type="text"
             name="senderName"
@@ -89,6 +167,22 @@ export default function Home() {
             value={recipientEmail}
             onChange={(e) => setRecipientEmail(e.target.value)}
           />
+          <div className={styles.buttonRow}>
+            <button
+              type="button"
+              className={styles.mailButton}
+              onClick={() => addToRecipientEmail("@gmail.com")}
+            >
+              ...@gmail.com
+            </button>
+            <button
+              type="button"
+              className={styles.mailButton}
+              onClick={() => addToRecipientEmail("@outlook.com")}
+            >
+              ...@outlook.com
+            </button>
+          </div>
           {!loading && <input type="submit" value="Generate email" />}
         </form>
 

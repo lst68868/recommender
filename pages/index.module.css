@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 60px;
+  padding-top: 10px;
 }
 .main .icon {
   width: 34px;
@@ -35,6 +35,7 @@
   font-weight: bold;
   color: #202123;
   margin: 16px 0 40px;
+  margin-bottom: 20px;
 }
 .main form {
   display: flex;
@@ -45,8 +46,8 @@
   padding: 12px 16px;
   border: 1px solid #10a37f;
   border-radius: 4px;
-  margin-bottom: 24px;
   outline-color: #10a37f;
+  margin-bottom: 8px;
 }
 .main ::placeholder {
   color: #8e8ea0;
@@ -63,7 +64,7 @@
 }
 .main .result {
   font-family: "ColfaxAI", Helvetica, sans-serif;
-  margin-top: 40px;
+  margin-top: 8px;
   margin-left: 20px; /* Left margin */
   margin-right: 20px; /* Right margin */
   width: calc(100% - 200px); /* Adjust the width */
@@ -77,15 +78,16 @@
 
 .main .mailButton {
   padding: 12px 0;
-  color: #fff;
-  background-color: #4fb6cf; /* Updated color */
+  color: #ffffff;
+  background-color: #fcd638;
   border: none;
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
   padding: 12px 16px;
-  margin-top: 10px;
-  margin-right: 10px; /* Added margin */
+  margin-top: 4px;
+  margin-right: 2px;
+  margin-left: 2px; /* Added margin */
 }
 
 .main .clearButton {
@@ -97,12 +99,13 @@
   text-align: center;
   cursor: pointer;
   padding: 12px 16px;
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
 .main .buttonContainer {
   display: flex;
-  justify-content: space-between; /* To spread buttons apart */
+  justify-content: space-between;
+  margin-top: 4px; /* To spread buttons apart */
 }
 
 .main input[type="submit"]:hover {
@@ -111,8 +114,8 @@
   transition: all 0.3s ease; /* Smooth transition effect */
 }
 
-.main .mailButton:hover {
-  background-color: #3f9db0;
+.main .mailButton:hover { 
+  background-color: #fabe2c;
   transition: all 0.3s ease; /* Smooth transition effect */
 }
 
@@ -121,7 +124,34 @@
   transition: all 0.3s ease; /* Smooth transition effect */
 }
 
-.loadingMessage {
-  font-weight: bold;
-  font-size: 20px;
+.buttonRowContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0px;
+  margin-bottom: 4px;
 }
+.buttonRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.buttonRow .mailButton {
+  background-color: #3f9db0;
+}
+
+.buttonRow .mailButton:hover {
+  background-color: #368a98; /* Slightly darkened color for hover state */
+}
+
+.buttonRow .mailButton {
+  width: 156px; /* or whatever width you want */
+  height: 25px;
+  text-align: center;
+  padding: 0;
+  /* or whatever height you want */
+  /* other styles as needed */
+}
+
