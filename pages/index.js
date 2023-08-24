@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState, CSSProperties } from "react";
+import { useState } from "react";
 import PacmanLoader from "react-spinners/PacmanLoader";
 import styles from "./index.module.css";
 
