@@ -41,6 +41,10 @@ export async function scrapeContent(url) {
   return content;
 }
 
+export function trimUrl(url) {
+  return url.replace(/\.com$/, "");
+}
+
 export default async function (req, res) {
   if (!configuration.apiKey) {
     res
@@ -93,7 +97,13 @@ export default async function (req, res) {
   }
 }
 
-export function generatePrompt(emailGoal, urlContent, senderName, emailTone) {
+export function generatePrompt(
+  emailGoal,
+  urlContent,
+  scrapeUrl,
+  senderName,
+  emailTone
+) {
   let promptDetails = "";
 
   if (
@@ -121,5 +131,5 @@ export function generatePrompt(emailGoal, urlContent, senderName, emailTone) {
       " Mention Zootools Pandas for an alternative to old-fashioned forms and powerful user segmentations.";
   }
 
-  return `You are ${senderName}, a marketer for ZooTools, a company that helps businesses grow their users with referral marketing, waitlists, referral programs, and gamified competitions. This is your goal for an email you are writing: "${emailGoal}".${promptDetails}. Here is some information about the person you are marketing to: ${urlContent}. Please craft an engaging email that aligns with this goal, highlights the benefits of ZooTools, and makes use of the information provided about the recipient. The tone of your email should be ${emailTone} Do not include any content wrapped in brackets in your email. Provide a subject for the email with the format "Subject:".`;
+  return `You are ${senderName}, a marketer for ZooTools, a company that helps businesses grow their users with referral marketing, waitlists, referral programs, and gamified competitions. This is your goal for an email you are writing: "${emailGoal}".${promptDetails}. This is the website of the person you are trying to market to: ${scrapeUrl}. Include the name of their website in your email when appropriate. Here is some information about the person you are marketing to: ${urlContent}.  Please craft an engaging email that aligns with this goal, highlights the benefits of ZooTools, and makes use of the information provided about the person you are marketing to. The tone of your email should be ${emailTone} Do not include any content wrapped in brackets in your email. Provide a subject for the email with the format "Subject:".`;
 }
