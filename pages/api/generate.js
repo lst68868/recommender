@@ -6,7 +6,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-async function scrapeContent(url) {
+export async function scrapeContent(url) {
   let content = "";
   try {
     const browser = await puppeteer.launch();
@@ -92,13 +92,7 @@ export default async function (req, res) {
   }
 }
 
-export function generatePrompt(
-  emailGoal,
-  urlContent,
-  recipientName,
-  senderName,
-  emailTone
-) {
+export function generatePrompt(emailGoal, urlContent, senderName, emailTone) {
   let promptDetails = "";
 
   if (
