@@ -53,13 +53,13 @@ export default async function (req, res) {
   }
 }
 
-function generatePrompt(emailGoal) {
+export function generatePrompt(emailGoal) {
   let promptDetails = "";
 
   if (
     emailGoal.includes("waitlist") ||
     emailGoal.includes("referral") ||
-    emailGoal.toLowerCase().includes("Zootools Acquire")
+    emailGoal.toLowerCase().includes("Zootools Acquire".toLocaleLowerCase())
   ) {
     promptDetails +=
       " Include details about ZooTools Acquire, the #1 tool for creating waitlists and referral programs.";
@@ -67,7 +67,7 @@ function generatePrompt(emailGoal) {
   if (
     emailGoal.includes("email marketing") ||
     emailGoal.includes("engagement") ||
-    emailGoal.toLowerCase().includes("Zootools Engage")
+    emailGoal.toLowerCase().includes("Zootools Engage".toLocaleLowerCase())
   ) {
     promptDetails +=
       " Highlight ZooTools Engage for modern email marketing with built-in virality.";
@@ -75,7 +75,7 @@ function generatePrompt(emailGoal) {
   if (
     emailGoal.includes("forms") ||
     emailGoal.includes("user segmentations") ||
-    emailGoal.toLowerCase().includes("Zootools Pandas")
+    emailGoal.toLowerCase().includes("Zootools Pandas".toLocaleLowerCase())
   ) {
     promptDetails +=
       " Mention Zootools Pandas for an alternative to old-fashioned forms and powerful user segmentations.";

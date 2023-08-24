@@ -1,8 +1,16 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useState, CSSProperties } from "react";
+import PacmanLoader from "react-spinners/PacmanLoader";
 import styles from "./index.module.css";
 
+const override = {
+  display: "block",
+  margin: "89px auto",
+  borderColor: "red",
+};
+
 export default function Home() {
+  let [color, setColor] = useState("#10a37f");
   const [emailGoal, setEmailGoal] = useState("");
   const [senderName, setSenderName] = useState("");
   const [recipientName, setRecipientName] = useState("");
@@ -83,17 +91,30 @@ export default function Home() {
           />
           <input type="submit" value="Generate email" />
         </form>
-        <textarea
-          className={`${styles.result} ${loading ? styles.loadingMessage : ""}`}
-          placeholder={
-            loading
-              ? "Loading..."
-              : 'Your email will appear here. You can edit the text directly or click "send email" to edit and send from your default email provider.'
-          }
-          value={result}
-          onChange={(e) => setResult(e.target.value)}
-          readOnly={loading}
-        />
+
+        {loading ? (
+          <PacmanLoader
+            color={color}
+            loading={loading}
+            cssOverride={override}
+            size={30}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        ) : (
+          <textarea
+            className={`${styles.result} ${
+              loading ? styles.loadingMessage : ""
+            }`}
+            placeholder={
+              'Your email will appear here. You can edit the text directly or click "send email" to edit and send from your default email provider.'
+            }
+            value={result}
+            onChange={(e) => setResult(e.target.value)}
+            readOnly={loading}
+          />
+        )}
+
         <div className={styles.buttonContainer}>
           <button
             className={styles.mailButton}
