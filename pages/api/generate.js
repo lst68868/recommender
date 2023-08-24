@@ -66,7 +66,7 @@ export default async function (req, res) {
   try {
     const content = await scrapeContent(scrapeUrl);
     const completion = await openai.createCompletion({
-      model: "gpt-3.5-turbo",
+      model: "text-davinci-003",
       prompt: generatePrompt(emailGoal, content), // Note that content might be empty if scraping failed
       temperature: 0.7,
       max_tokens: 500,
