@@ -10,7 +10,7 @@ const override = {
 };
 
 export default function Home() {
-  let [color, setColor] = useState("#10a37f");
+  let [color, setColor] = useState("#3f9db0");
   const [emailGoal, setEmailGoal] = useState("");
   const [senderName, setSenderName] = useState("");
   const [recipientName, setRecipientName] = useState("");
@@ -37,6 +37,16 @@ export default function Home() {
     event.preventDefault();
     setLoading(true);
     try {
+      console.log("Recipient Name before sending:", recipientName);
+      const payload = {
+        emailGoal,
+        senderName,
+        recipientName,
+        recipientEmail,
+        emailTone,
+        scrapeUrl,
+      };
+      console.log("Payload before sending:", payload);
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
@@ -46,6 +56,8 @@ export default function Home() {
           emailGoal,
           senderName,
           recipientName,
+          recipientEmail,
+          emailTone,
           scrapeUrl,
         }),
       });
@@ -199,7 +211,10 @@ export default function Home() {
             name="recipientName"
             placeholder="Enter the recipient's name"
             value={recipientName}
-            onChange={(e) => setRecipientName(e.target.value)}
+            onChange={(e) => {
+              console.log("Updating recipientName:", e.target.value);
+              setRecipientName(e.target.value);
+            }}
           />
           <input
             type="text"

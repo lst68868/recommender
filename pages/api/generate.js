@@ -15,7 +15,9 @@ export async function scrapeContent(url) {
     await page.setRequestInterception(true);
     page.on("request", (req) => {
       if (
-        ["image", "stylesheet", "font", "media"].includes(req.resourceType())
+        ["image", "stylesheet", "font", "media", undefined].includes(
+          req.resourceType()
+        )
       ) {
         req.abort();
       } else {
@@ -59,6 +61,8 @@ export default async function (req, res) {
   const scrapeUrl = req.body.scrapeUrl || "";
   const emailTone = req.body.emailTone || "";
 
+  console.log(req.body);
+
   if (
     emailGoal.trim().length === 0 ||
     senderName.trim().length === 0 ||
@@ -72,7 +76,7 @@ export default async function (req, res) {
     const content = await scrapeContent(scrapeUrl);
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generatePrompt(emailGoal, content), // Note that content might be empty if scraping failed
+      prompt: generatePrompt(emailGoal, content),
       temperature: 0.7,
       max_tokens: 500,
     });
@@ -131,5 +135,5 @@ export function generatePrompt(
       " Mention Zootools Pandas for an alternative to old-fashioned forms and powerful user segmentations.";
   }
 
-  return `You are ${senderName}, a marketer for ZooTools, a company that helps businesses grow their users with referral marketing, waitlists, referral programs, and gamified competitions. This is your goal for an email you are writing: "${emailGoal}".${promptDetails}. This is the website of the person you are trying to market to: ${scrapeUrl}. Here is some information about the person you are marketing to: ${urlContent}. Please craft an engaging email that aligns with this goal, highlights the benefits of ZooTools, and makes use of the information provided about the person you are marketing to. When possible, use a sentence that begins with "Based on your website..." and references the provided information. The tone of your email should be ${emailTone} Do not include any content wrapped in brackets in your email. Provide a subject for the email with the format "Subject:".`;
+  return `You are ${senderName}, a marketer for ZooTools, a company that helps businesses grow their users with referral marketing, waitlists, referral programs, and gamified competitions. This is your goal for an email you are writing: "${emailGoal}".${promptDetails}. This is the website of the person you are trying to market to: ${scrapeUrl}. Here is some information about the person you are marketing to: ${urlContent}. Please craft an engaging email that aligns with this goal, highlights the benefits of ZooTools, and makes use of the information provided about the person you are marketing to. The tone of your email should be ${emailTone}. When possible, use a sentence that begins with "Based on your website..." and references the information (${urlContent}) from their website ${scrapeUrl}. If there is no useful information provided, skip that step. Provide a subject for the email with the format "Subject:". Sign the email as ${senderName}.`;
 }
