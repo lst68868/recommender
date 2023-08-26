@@ -9,6 +9,6 @@ describe("scrapeContent function", () => {
     const content = await scrapeContent(url);
 
     // Check if the content matches the expected result
-    expect(typeof content).toBe("string" || "object");
+    expect(["string", "object"]).toContain(typeof content);
   }, 10000);
 });
