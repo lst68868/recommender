@@ -11,8 +11,13 @@ export async function scrapeContent(url) {
   let browser;
 
   try {
-    browser = await puppeteer.launch({ headless: true });
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
+
+    await page.setRequestInterception(true); // Enable request interception
 
     const handleRequest = (req) => {
       if (
