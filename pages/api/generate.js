@@ -15,9 +15,7 @@ export async function scrapeContent(url) {
     await page.setRequestInterception(true);
     page.on("request", (req) => {
       if (
-        ["image", "stylesheet", "font", "media", undefined].includes(
-          req.resourceType()
-        )
+        ["image", "stylesheet", "font", "media"].includes(req.resourceType())
       ) {
         req.abort();
       } else {
@@ -31,20 +29,15 @@ export async function scrapeContent(url) {
     });
 
     content += await page.evaluate(() => document.body.innerText);
-    console.log(content);
     await browser.close();
   } catch (error) {
     console.warn(
       "An error occurred while scraping the URL. Skipping scraping.",
       error
     );
+    return null; // Return null in case of an error.
   }
-  console.log(content);
   return content;
-}
-
-export function trimUrl(url) {
-  return url.replace(/\.com$/, "");
 }
 
 export default async function (req, res) {
@@ -58,10 +51,9 @@ export default async function (req, res) {
   const emailGoal = req.body.emailGoal || "";
   const senderName = req.body.senderName || "";
   const recipientName = req.body.recipientName || "";
+  const recipientEmail = req.body.recipientEmail || "";
   const scrapeUrl = req.body.scrapeUrl || "";
   const emailTone = req.body.emailTone || "";
-
-  console.log(req.body);
 
   if (
     emailGoal.trim().length === 0 ||
@@ -76,7 +68,14 @@ export default async function (req, res) {
     const content = await scrapeContent(scrapeUrl);
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generatePrompt(emailGoal, content),
+      prompt: generatePrompt(
+        emailGoal,
+        content,
+        scrapeUrl,
+        senderName,
+        recipientName,
+        emailTone
+      ),
       temperature: 0.7,
       max_tokens: 500,
     });
@@ -106,6 +105,7 @@ export function generatePrompt(
   urlContent,
   scrapeUrl,
   senderName,
+  recipientName,
   emailTone
 ) {
   let promptDetails = "";
@@ -116,7 +116,7 @@ export function generatePrompt(
     emailGoal.toLowerCase().includes("Zootools Acquire".toLocaleLowerCase())
   ) {
     promptDetails +=
-      " Include details about ZooTools Acquire, the #1 tool for creating waitlists and referral programs.";
+      " Include details about ZooTools Acquire, the leading tool for creating waitlists and referral programs.";
   }
   if (
     emailGoal.includes("email marketing") ||
@@ -124,7 +124,7 @@ export function generatePrompt(
     emailGoal.toLowerCase().includes("Zootools Engage".toLocaleLowerCase())
   ) {
     promptDetails +=
-      " Highlight ZooTools Engage for modern email marketing with built-in virality.";
+      " Highlight ZooTools Engage for advanced email marketing with integrated virality.";
   }
   if (
     emailGoal.includes("forms") ||
@@ -132,8 +132,28 @@ export function generatePrompt(
     emailGoal.toLowerCase().includes("Zootools Pandas".toLocaleLowerCase())
   ) {
     promptDetails +=
-      " Mention Zootools Pandas for an alternative to old-fashioned forms and powerful user segmentations.";
+      " Mention Zootools Pandas as an upgrade to traditional forms with powerful user segmentation capabilities.";
   }
 
-  return `You are ${senderName}, a marketer for ZooTools, a company that helps businesses grow their users with referral marketing, waitlists, referral programs, and gamified competitions. This is your goal for an email you are writing: "${emailGoal}".${promptDetails}. This is the website of the person you are trying to market to: ${scrapeUrl}. Here is some information about the person you are marketing to: ${urlContent}. Please craft an engaging email that aligns with this goal, highlights the benefits of ZooTools, and makes use of the information provided about the person you are marketing to. The tone of your email should be ${emailTone}. When possible, use a sentence that begins with "Based on your website..." and references the information (${urlContent}) from their website ${scrapeUrl}. Important: do not ever under any circumstances return ANY content wrapped in brackets like [topic] or [website]. Never include the word undefined in your response. You want to sound like a human, not a robot. Provide a subject for the email with the format "Subject:". Sign the email as ${senderName}.`;
+  let recipientPart = recipientName ? `${recipientName}` : "Hey there!";
+  let basedOnWebsitePart =
+    scrapeUrl && urlContent
+      ? `Based on your website, ${scrapeUrl}, ${urlContent}`
+      : "From our analysis of potential partners";
+
+  return `As ${senderName}, a marketer at ZooTools, craft an email promoting our referral marketing, waitlists, referral programs, and gamified competitions to ${recipientPart}.
+  
+  Initial Info: ${basedOnWebsitePart}.
+  Email Goal: ${emailGoal}
+  Details: ${promptDetails}
+  Desired Tone: ${emailTone}
+  
+  Guidelines:
+  1. Incorporate any given information about the recipient's website.
+  2. Highlight the benefits of ZooTools.
+  3. Ensure a human-like tone.
+  4. Start with "Subject:" followed by the email's subject.
+  5. End the email with a signature: ${senderName}.
+  6. Do not include bracketed content like [topic] or mention the word "undefined".
+  `;
 }
