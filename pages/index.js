@@ -295,6 +295,7 @@ export default function Home() {
                 setEmailGoal("");
                 setSenderName("");
                 setRecipientName("");
+                setEmailTone("");
                 setRecipientEmail("");
                 setSubjectLine("Hello From ZooTools");
                 setResult("");
