@@ -8,12 +8,13 @@ const openai = new OpenAIApi(configuration);
 
 export async function scrapeContent(url) {
   let content = "";
+  let browser;
+
   try {
-    const browser = await puppeteer.launch({ headless: "new" });
+    browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
-    await page.setRequestInterception(true);
-    page.on("request", (req) => {
+    const handleRequest = (req) => {
       if (
         ["image", "stylesheet", "font", "media"].includes(req.resourceType())
       ) {
@@ -21,7 +22,9 @@ export async function scrapeContent(url) {
       } else {
         req.continue();
       }
-    });
+    };
+
+    page.on("request", handleRequest);
 
     await page.goto("https://" + url, {
       waitUntil: "domcontentloaded",
@@ -29,13 +32,16 @@ export async function scrapeContent(url) {
     });
 
     content += await page.evaluate(() => document.body.innerText);
-    await browser.close();
+
+    page.removeListener("request", handleRequest);
   } catch (error) {
     console.warn(
       "An error occurred while scraping the URL. Skipping scraping.",
       error
     );
-    return null; // Return null in case of an error.
+    return null;
+  } finally {
+    if (browser) await browser.close();
   }
   return content;
 }
