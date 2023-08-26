@@ -9,7 +9,7 @@ const openai = new OpenAIApi(configuration);
 export async function scrapeContent(url) {
   let content = "";
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
 
     await page.setRequestInterception(true);
